@@ -8,7 +8,7 @@ using System.Net;
 
 namespace MagicVilla_VillaApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/VillaNumber")]
     [ApiController]
     public class VillaNumberController : ControllerBase
     {
@@ -40,7 +40,7 @@ namespace MagicVilla_VillaApi.Controllers
         {
             try
             {
-                IEnumerable<VillaNumber> villaNumbersList = await _db.GetAllAsync();
+                IEnumerable<VillaNumber> villaNumbersList = await _db.GetAllAsync(includeProperties: "Villa");
                 _response.Result = _mapper.Map<List<VillaNumberDTO>>(villaNumbersList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -66,7 +66,7 @@ namespace MagicVilla_VillaApi.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return Ok(_response);
                 }
-                var villaNumber = await _db.GetAsync(u => u.VillaNum == id);
+                var villaNumber = await _db.GetAsync(u => u.VillaNum == id, includeProperties: "Villa");
                 if (villaNumber == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
@@ -100,7 +100,7 @@ namespace MagicVilla_VillaApi.Controllers
                     ModelState.AddModelError("Villa Number Error", "Villa Number already exists");
                     return BadRequest(ModelState);
                 }
-                if(await _db.GetAsync(u => u.VillaId == villaNumberCreateDTO.VillaId)==null)
+                if(await _villaRepository.GetAsync(u => u.Id == villaNumberCreateDTO.VillaId)==null)
                 {
                     ModelState.AddModelError("Villa Error", "Villa doesn't exists");
                     return BadRequest(ModelState);
