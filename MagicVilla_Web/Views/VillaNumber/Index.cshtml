@@ -29,8 +29,10 @@
 					<td>@item.Villa.Name</td>
 					<td>@item.VillaNum</td>
 					<td>
-						<a asp-controller="Villa" asp-action="UpdateVillaNumber" asp-route-villaNum="@item.VillaNum" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
-						<a asp-controller="Villa" asp-action="DeleteVillaNumber" asp-route-villaNum="@item.VillaNum" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+						<a asp-controller="VillaNumber" asp-action="UpdateVillaNumber" asp-route-villaNum="@item.VillaNum" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+						<button class="btn btn-danger" onclick="confirmDelete('@item.VillaNum')">
+							<i class="bi bi-trash-fill"></i> Delete
+						</button>
 					</td>
 				</tr>
 			}
@@ -38,3 +40,25 @@
 	</table>
 
 </div>
+<!-- Include SweetAlert2 (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+	function confirmDelete(villaNum) {
+		Swal.fire({
+			title: "Are you sure?",
+			text: `You are about to delete "${villaNum}". This action cannot be undone!`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#d33",
+			cancelButtonColor: "#3085d6",
+			confirmButtonText: "Yes, delete it!",
+			cancelButtonText: "Cancel"
+		}).then((result) => {
+			if (result.isConfirmed) {
+				// Redirect to delete action
+				window.location.href = `/VillaNumber/DeleteVillaNum?villaNum=${villaNum}`;
+			}
+		});
+	}
+</script>

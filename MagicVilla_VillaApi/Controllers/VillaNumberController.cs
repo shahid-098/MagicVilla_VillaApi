@@ -53,7 +53,7 @@ namespace MagicVilla_VillaApi.Controllers
             return Ok(_response);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -97,12 +97,12 @@ namespace MagicVilla_VillaApi.Controllers
                 }
                 if (await _db.GetAsync(u => u.VillaNum == villaNumberCreateDTO.VillaNum)!=null)
                 {
-                    ModelState.AddModelError("Villa Number Error", "Villa Number already exists");
+                    ModelState.AddModelError("ErrorMessages", "Villa Number already exists");
                     return BadRequest(ModelState);
                 }
                 if(await _villaRepository.GetAsync(u => u.Id == villaNumberCreateDTO.VillaId)==null)
                 {
-                    ModelState.AddModelError("Villa Error", "Villa doesn't exists");
+                    ModelState.AddModelError("ErrorMessages", "Villa doesn't exists");
                     return BadRequest(ModelState);
                 }
                 VillaNumber villaNumber = _mapper.Map<VillaNumber>(villaNumberCreateDTO);
@@ -118,7 +118,7 @@ namespace MagicVilla_VillaApi.Controllers
             return Ok(_response);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdateVillaNumber(int id, [FromBody] VillaNumberUpdateDTO villaNumberUpdateDto)
@@ -131,9 +131,9 @@ namespace MagicVilla_VillaApi.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return Ok(_response);
                 }
-                if (await _db.GetAsync(u => u.VillaId == villaNumberUpdateDto.VillaId)==null)
+                if (await _villaRepository.GetAsync(u => u.Id == villaNumberUpdateDto.VillaId)==null)
                 {
-                    ModelState.AddModelError("Villa Error", "Villa doesn't exists");
+                    ModelState.AddModelError("ErrorMessages", "Villa doesn't exists");
                     return BadRequest(ModelState);
                 }
                 VillaNumber model = _mapper.Map<VillaNumber>(villaNumberUpdateDto);
@@ -149,7 +149,7 @@ namespace MagicVilla_VillaApi.Controllers
             return Ok(_response);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
